@@ -24,7 +24,8 @@ def Lap_Greedy():
     # worker的位置进行扰动
     W_w = []
     for i in range(len(workers)):
-        x,y = polar_Laplace(workers[i]['x'],workers[i]['y'],workers[i]['epsilon'])
+        # x,y = polar_Laplace(workers[i]['x'],workers[i]['y'],workers[i]['epsilon'])
+        x,y = polar_Laplace(workers[i]['x'],workers[i]['y'],epsilon)
         W_w.append({
             'id' : i,
             'x' : x,
@@ -33,7 +34,8 @@ def Lap_Greedy():
     print(W_w)
     # 按用户的顺序进行扰动，分配当前最近的worker
     for i in range(len(tasks)):
-        x,y = polar_Laplace(tasks[i]['x'],tasks[i]['y'],tasks[i]['epsilon'])
+        # x,y = polar_Laplace(tasks[i]['x'],tasks[i]['y'],tasks[i]['epsilon'])
+        x,y = polar_Laplace(tasks[i]['x'],tasks[i]['y'],epsilon)
         now = {
             'x' : x,
             'y' : y
@@ -66,5 +68,6 @@ tasks = [
     {'x': 6,'y': 2,'epsilon': 0.1},
 ]
 M = []
+epsilon = 0.2
 Lap_Greedy()
 print(M)

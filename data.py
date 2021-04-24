@@ -3,10 +3,11 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from mpl_toolkits.mplot3d import Axes3D
 # %matplotlib inline
-
+plt.rcParams['font.sans-serif']=['SimHei'] #显示中文标签
+plt.rcParams['axes.unicode_minus']=False   #这两行需要手动设置
 
 # 生成高斯分布
-def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
+def Gaussian_Distribution(N=2, M=3000, m=100, sigma=20):
     '''
     Parameters
     ----------
@@ -29,16 +30,22 @@ def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
     
     return data, Gaussian
 
-'''二元高斯散点图'''
-data, _ = Gaussian_Distribution(N=2, M=300)
+'''二元高斯散点图举例'''
+data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
 for i in data:
     print(i)
 x, y = data.T
+print(len(data))
 plt.scatter(x, y)
+plt.title('服从均值=100，方差=20的二维正态分布散点图')
 plt.xlabel("x")
 plt.ylabel("y")
 plt.grid(linewidth='1')
 plt.show()
+
+
+
+
 
 # 确定一下测试数据的内容
 
