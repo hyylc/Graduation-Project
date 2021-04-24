@@ -212,6 +212,28 @@ def algorithm_3(leaf):
         level -= 1
     return s
 
+def cal_pro(epsilon):
+    global WT
+    # 扰动概率
+    WT = 1
+    for i in range(D+1):
+        wt[i] = math.exp((4-pow(2,i+2))*epsilon)
+    for i in range(D):
+        WT += pow((c-1),i)*(c-2)*wt[i+1]
+    for i in range(num_of_nodes):
+        for j in range(num_of_nodes):
+            M[i][j] = round(wt[LCA[i][j]]/WT , 3)
+
+    # 随机游走概率
+    tw[0] = WT
+    tw[1] = WT-1
+    for i in range(D-1):
+        tw[i+2] = tw[i+1]-pow((c-1),i)*(c-2)*wt[i+1]
+    for i in range(D):
+        pu[i] = round(tw[i+1]/tw[i] , 3)
+    # print('每层向上走的概率：',pu)
+    # print('结点0扰动概率：',M[0])
+
 
 # 为worker进行扰动，返回work扰动后的位置（用W'序列描述）
 def worker_peturbed(node):
@@ -228,11 +250,12 @@ def worker_peturbed(node):
             if tmp_dis < shortest_dis:
                 shortest_dis = tmp_dis
                 shortest_node = i
+    cal_pro(node['epsilon'])
     # 调用算法3获得扰动结果
-    print(node,'最近的点',shortest_node)
+    # print(node,'最近的点',shortest_node)
     # 调用算法3获得扰动结果
     perturbed_node = algorithm_3(shortest_node)
-    print(node,'扰动结果为',perturbed_node)
+    # print(node,'扰动结果为',perturbed_node)
     return perturbed_node
     
 
@@ -252,18 +275,19 @@ def algorithm_4(node_list):
                 if tmp_dis < shortest_dis:
                     shortest_dis = tmp_dis
                     shortest_node = i
+        cal_pro(node_list[item]['epsilon'])
         # 调用算法3获得扰动结果
-        print('task',item,'最近的点',shortest_node)
+        # print('task',item,'最近的点',shortest_node)
         # 调用算法3获得扰动结果
         perturbed_node = algorithm_3(shortest_node)
-        print('task',item,'扰动结果为',perturbed_node)
+        # print('task',item,'扰动结果为',perturbed_node)
         # 分配worker，在树的叶子节点中(也就是W')找到一个最近的点，从W'删除点，将这次匹配记录到M中
         dis_abs = num_of_nodes+1
         match = dict
         for w in W_w:
-            print(w)
+            # print(w)
             tmp = abs(w['position'] - perturbed_node)
-            print(tmp)
+            # print(tmp)
             if tmp < dis_abs:
                 dis_abs = tmp
                 match = w
@@ -272,28 +296,6 @@ def algorithm_4(node_list):
             'w': match['id']
         })
         W_w.remove(match)
-
-def cal_pro(epsilon):
-    global WT
-    # 扰动概率
-    for i in range(D+1):
-        wt[i] = math.exp((4-pow(2,i+2))*epsilon)
-    for i in range(D):
-        WT += pow((c-1),i)*(c-2)*wt[i+1]
-    for i in range(num_of_nodes):
-        for j in range(num_of_nodes):
-            M[i][j] = round(wt[LCA[i][j]]/WT , 3)
-
-    # 随机游走概率
-    tw[0] = WT
-    tw[1] = WT-1
-    for i in range(D-1):
-        tw[i+2] = tw[i+1]-pow((c-1),i)*(c-2)*wt[i+1]
-    for i in range(D):
-        pu[i] = round(tw[i+1]/tw[i] , 3)
-    print('每层向上走的概率：',pu)
-    print('结点0扰动概率：',M[0])
-
 
 
 
@@ -329,20 +331,23 @@ WT = 1
 wt = [0 for i in range(D+1)]
 tw = [0 for i in range(D+1)]
 pu = [0 for i in range(D+1)]
-# 测试worker集合和task集合
+# 测试数据：worker集合和task集合
 workers = [
-    {'x': 2,'y': 3},
-    {'x': 2,'y': 2},
-    {'x': 5,'y': 5},
+    {'x': 2,'y': 3,'epsilon': 0.01},
+    {'x': 2,'y': 2,'epsilon': 0.1},
+    {'x': 5,'y': 5,'epsilon': 0.2},
 ]
+
 tasks = [
-    {'x': 1,'y': 0},
-    {'x': 1,'y': 3},
-    {'x': 6,'y': 2}, 
+    {'x': 1,'y': 0,'epsilon': 0.1},
+    {'x': 1,'y': 3,'epsilon': 0.1},
+    {'x': 6,'y': 2,'epsilon': 0.1},
 ]
 
 ######代码运行######
-
+# epsilon = 0.1
+# 每层向上走的概率： [0.606, 0.564, 0.304, 0.075, 0]
+# 结点0扰动概率： [0.394, 0.264, 0.119, 0.119, 0.024, 0.024, 0.024, 0.024, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
 # algorithm_1构造树
 HST_tree = algorithm_1(metrixs)
 # 叶子结点数
@@ -355,7 +360,7 @@ LCA_level(D, 0, num_of_nodes-1)
 # 构建S，每一层的结点和对应的父亲结点如下
 get_S(HST_tree, D)
 # 计算概率矩阵
-cal_pro(epsilon)
+# cal_pro(epsilon)
 # 测试
 W_w = []
 MA = []
@@ -368,7 +373,7 @@ for i in range(len(workers)):
         'position' : re
     }
     W_w.append(tmp)
-print(W_w)
-print('\n')
+# print(W_w)
+# print('\n')
 algorithm_4(tasks)
 print('匹配结果：',MA)
