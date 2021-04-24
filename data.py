@@ -2,6 +2,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from mpl_toolkits.mplot3d import Axes3D
+import random
 # %matplotlib inline
 plt.rcParams['font.sans-serif']=['SimHei'] #显示中文标签
 plt.rcParams['axes.unicode_minus']=False   #这两行需要手动设置
@@ -26,90 +27,73 @@ def Gaussian_Distribution(N=2, M=3000, m=100, sigma=20):
     # 产生 N 维高斯分布数据
     data = np.random.multivariate_normal(mean, cov, M)
     # N 维数据高斯分布概率密度函数
-    Gaussian = multivariate_normal(mean=mean, cov=cov)
-    
+    Gaussian = multivariate_normal(mean=mean, cov=cov) 
     return data, Gaussian
 
-'''二元高斯散点图举例'''
-data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
-for i in data:
-    print(i)
-x, y = data.T
-print(len(data))
-plt.scatter(x, y)
-plt.title('服从均值=100，方差=20的二维正态分布散点图')
-plt.xlabel("x")
-plt.ylabel("y")
-plt.grid(linewidth='1')
-plt.show()
+# 生成均匀分布
+def uniform_Distribution(a=0.6, b=1.2, M=3000):
+    re = []
+    for i in range(M):
+        re.append(round(random.uniform(a, b),3))
+    return re
 
 
+def data_pre(lt=3000, lw=5000, m=100, sd=20):
+    worker, _ = Gaussian_Distribution(M=lw)
+    task, _ = Gaussian_Distribution(M=lt)
+    w_e = uniform_Distribution(M=lw)
+    t_e = uniform_Distribution(M=lt)
+    w_x,w_y = worker.T 
+    t_x,t_y = task.T
+    re_worker = []
+    re_task = []
+    for i in range(lw):
+        tmp = {
+            'x' : round(w_x[i],3),
+            'y' : round(w_y[i],3),
+            'epsilon' : round(w_e[i],3)
+        }
+        re_worker.append(tmp)
+    for i in range(lt):
+        tmp = {
+            'x' : round(t_x[i],3),
+            'y' : round(t_y[i],3),
+            'epsilon' : round(t_e[i],3)
+        }
+        re_task.append(tmp)
+    # 打开一个文件
+    fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "w")
+    fo.write(str(re_worker))
+    fo.write("\n")
+    fo.write(str(re_task))
+    # 关闭打开的文件
+    fo.close()
+               
 
+# 固定其中三项
+T_size = [1000,2000,3000,4000,5000]
+W_size = [3000,4000,5000,6000,7000]
+mean = [50,75,100,125,150]
+sigma = [10,15,20,25,30]
 
+for i in range(len(T_size)):
+    data_pre(lt=T_size[i])
+for i in range(len(W_size)):
+    data_pre(lw=W_size[i])
+for i in range(len(mean)):
+    data_pre(m=mean[i])
+for i in range(len(sigma)):
+    data_pre(sd=sigma[i])
 
-# 确定一下测试数据的内容
-
-# import numpy as np
-# import matplotlib.pyplot as plt #绘图模块
-# import math
-
-# u = 0   # 均值μ
-# u01 = -2
-# sig = math.sqrt(0.2)  # 标准差δ
-# sig01 = math.sqrt(1)
-# sig02 = math.sqrt(5)
-# sig_u01 = math.sqrt(0.5)
-# x = np.linspace(u - 3*sig, u + 3*sig, 50)
-# x_01 = np.linspace(u - 6 * sig, u + 6 * sig, 50)
-# x_02 = np.linspace(u - 10 * sig, u + 10 * sig, 50)
-# x_u01 = np.linspace(u - 10 * sig, u + 1 * sig, 50)
-# y_sig = np.exp(-(x - u) ** 2 /(2* sig **2))/(math.sqrt(2*math.pi)*sig)
-# y_sig01 = np.exp(-(x_01 - u) ** 2 /(2* sig01 **2))/(math.sqrt(2*math.pi)*sig01)
-# y_sig02 = np.exp(-(x_02 - u) ** 2 / (2 * sig02 ** 2)) / (math.sqrt(2 * math.pi) * sig02)
-# y_sig_u01 = np.exp(-(x_u01 - u01) ** 2 / (2 * sig_u01 ** 2)) / (math.sqrt(2 * math.pi) * sig_u01)
-# plt.plot(x, y_sig, "r-", linewidth=2)
-# plt.plot(x_01, y_sig01, "g-", linewidth=2)
-# plt.plot(x_02, y_sig02, "b-", linewidth=2)
-# plt.plot(x_u01, y_sig_u01, "m-", linewidth=2)
-# # plt.plot(x, y, 'r-', x, y, 'go', linewidth=2,markersize=8)
-# plt.grid(True)
+# '''二元高斯散点图举例'''
+# data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
+# for i in data:
+#     print(i)
+# x, y = data.T
+# print(len(data))
+# plt.scatter(x, y)
+# plt.title('服从均值=100，方差=20的二维正态分布散点图')
+# plt.xlabel("x")
+# plt.ylabel("y")
+# plt.grid(linewidth='1')
 # plt.show()
-
-# import numpy as np
-# import matplotlib.pyplot as plt
-# def gen_clusters():
-#     mean1 = [0,0]
-#     cov1 = [[1,0],[0,10]]
-#     data = np.random.multivariate_normal(mean1,cov1,100)
-#     # mean2 = [10,10]
-#     # cov2 = [[10,0],[0,1]]
-#     # data = np.append(data,
-#     # np.random.multivariate_normal(mean2,cov2,100), 0)
-#     # mean3 = [10,0]
-#     # cov3 = [[3,0],[0,4]]
-#     # data = np.append(data,
-#     # np.random.multivariate_normal(mean3,cov3,100),0)
-#     return np.round(data,4)
-# def save_data(data,filename):
-#     with open(filename,'w') as file:
-#         for i in range(data.shape[0]):
-#             file.write(str(data[i,0])+','+str(data[i,1])+'\n')
-# def load_data(filename):
-#     data = []
-#     with open(filename,'r') as file:
-#         for line in file.readlines():
-#             data.append([ float(i) for i in line.split(',')])
-#     return np.array(data)
-# def show_scatter(data):
-#     x,y = data.T
-#     plt.scatter(x,y)
-#     plt.axis()
-#     plt.title("scatter")
-#     plt.xlabel("x")
-#     plt.ylabel("y")
-#     plt.show()
-# data = gen_clusters()
-# save_data(data,'3clusters.txt')
-# d = load_data('3clusters.txt')
-# show_scatter(d)
-
