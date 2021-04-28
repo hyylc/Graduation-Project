@@ -282,11 +282,12 @@ def algorithm_4(node_list):
         perturbed_node = algorithm_3(shortest_node)
         # print('task',item,'扰动结果为',perturbed_node)
         # 分配worker，在树的叶子节点中(也就是W')找到一个最近的点，从W'删除点，将这次匹配记录到M中
-        dis_abs = num_of_nodes+1
-        match = dict
+        dis_abs = D
+        match = W_w[0]
         for w in W_w:
             # print(w)
-            tmp = abs(w['position'] - perturbed_node)
+            # tmp是公共祖先层数
+            tmp = LCA[w['position']][perturbed_node]
             # print(tmp)
             if tmp < dis_abs:
                 dis_abs = tmp
@@ -332,17 +333,22 @@ wt = [0 for i in range(D+1)]
 tw = [0 for i in range(D+1)]
 pu = [0 for i in range(D+1)]
 # 测试数据：worker集合和task集合
-workers = [
-    {'x': 2,'y': 3,'epsilon': 0.01},
-    {'x': 2,'y': 2,'epsilon': 0.1},
-    {'x': 5,'y': 5,'epsilon': 0.2},
-]
+######数据集读取#####
+lt = 3000
+lw = 5000
+m = 100
+sd = 20
 
-tasks = [
-    {'x': 1,'y': 0,'epsilon': 0.1},
-    {'x': 1,'y': 3,'epsilon': 0.1},
-    {'x': 6,'y': 2,'epsilon': 0.1},
-]
+fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
+test_data = fo.readlines()
+fo.close()
+task_test = eval(test_data[0])
+worker_test = eval(test_data[1])
+print(len(task_test))
+print(len(worker_test))
+# 测试worker集合和task集合
+workers = worker_test
+tasks = task_test
 
 ######代码运行######
 # epsilon = 0.1

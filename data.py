@@ -30,6 +30,9 @@ def Gaussian_Distribution(N=2, M=3000, m=100, sigma=20):
     Gaussian = multivariate_normal(mean=mean, cov=cov) 
     return data, Gaussian
 
+
+
+
 # 生成均匀分布
 def uniform_Distribution(a=0.6, b=1.2, M=3000):
     re = []
@@ -63,12 +66,30 @@ def data_pre(lt=3000, lw=5000, m=100, sd=20):
         re_task.append(tmp)
     # 打开一个文件
     fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "w")
-    fo.write(str(re_worker))
-    fo.write("\n")
     fo.write(str(re_task))
+    fo.write('\n')
+    fo.write(str(re_worker))
     # 关闭打开的文件
     fo.close()
-               
+
+
+def pre_defined(N=100):
+    a = np.random.uniform(-100, 100, size=(N,2))
+    re = []
+    for i in a:
+        tmp = {
+            'x' : round(i[0],3),
+            'y' : round(i[1],3)
+        }
+        re.append(tmp)
+    plt.scatter(a[:,0],a[:,1])
+    plt.show()
+    # 打开一个文件
+    fo = open("predefined"+str(N)+".txt", "w")
+    fo.write(str(re))
+    # 关闭打开的文件
+    fo.close()
+    return re
 
 # 固定其中三项
 T_size = [1000,2000,3000,4000,5000]
@@ -76,14 +97,21 @@ W_size = [3000,4000,5000,6000,7000]
 mean = [50,75,100,125,150]
 sigma = [10,15,20,25,30]
 
-for i in range(len(T_size)):
-    data_pre(lt=T_size[i])
-for i in range(len(W_size)):
-    data_pre(lw=W_size[i])
-for i in range(len(mean)):
-    data_pre(m=mean[i])
-for i in range(len(sigma)):
-    data_pre(sd=sigma[i])
+
+# 生成测试的点
+# for i in range(len(T_size)):
+#     data_pre(lt=T_size[i])
+# for i in range(len(W_size)):
+#     data_pre(lw=W_size[i])
+# for i in range(len(mean)):
+#     data_pre(m=mean[i])
+# for i in range(len(sigma)):
+#     data_pre(sd=sigma[i])
+
+
+# 生成预定义的点
+pre_node = pre_defined()
+print(pre_node)
 
 # '''二元高斯散点图举例'''
 # data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
