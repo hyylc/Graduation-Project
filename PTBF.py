@@ -154,8 +154,8 @@ def algorithm_1(V):
     """
     # 构造HST树
     HST_tree = HST(V)
-    construct(HST_tree, D-1)
-    add_fake_nodes(HST_tree, D-1)
+    construct(HST_tree, D)
+    add_fake_nodes(HST_tree, D)
     # print(HST_tree)
     return HST_tree
 
@@ -222,7 +222,7 @@ def cal_pro(epsilon):
         WT += pow((c-1),i)*(c-2)*wt[i+1]
     for i in range(num_of_nodes):
         for j in range(num_of_nodes):
-            M[i][j] = round(wt[LCA[i][j]]/WT , 3)
+            M[i][j] = wt[LCA[i][j]]/WT
 
     # 随机游走概率
     tw[0] = WT
@@ -230,7 +230,7 @@ def cal_pro(epsilon):
     for i in range(D-1):
         tw[i+2] = tw[i+1]-pow((c-1),i)*(c-2)*wt[i+1]
     for i in range(D):
-        pu[i] = round(tw[i+1]/tw[i] , 3)
+        pu[i] = tw[i+1]/tw[i]
     # print('每层向上走的概率：',pu)
     # print('结点0扰动概率：',M[0])
 
@@ -323,7 +323,7 @@ print('beta:',beta)
 # 每一层的结点
 S = [[] for i in range(5)]
 # 划分距离
-r = [0]*D
+r = [0]*(D+1)
 # maximum number of branches in the tree
 c = 0
 # epsilon
@@ -339,16 +339,28 @@ lw = 5000
 m = 100
 sd = 20
 
-fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
-test_data = fo.readlines()
-fo.close()
-task_test = eval(test_data[0])
-worker_test = eval(test_data[1])
-print(len(task_test))
-print(len(worker_test))
-# 测试worker集合和task集合
-workers = worker_test
-tasks = task_test
+# fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
+# test_data = fo.readlines()
+# fo.close()
+# task_test = eval(test_data[0])
+# worker_test = eval(test_data[1])
+# print(len(task_test))
+# print(len(worker_test))
+# # 测试worker集合和task集合
+# workers = worker_test
+# tasks = task_test
+
+workers = [
+    {'x': 2,'y': 3,'epsilon': 0.01},
+    {'x': 2,'y': 2,'epsilon': 0.1},
+    {'x': 5,'y': 5,'epsilon': 0.2},
+]
+
+tasks = [
+    {'x': 1,'y': 0,'epsilon': 0.1},
+    {'x': 1,'y': 3,'epsilon': 0.1},
+    {'x': 6,'y': 2,'epsilon': 0.1},
+]
 
 ######代码运行######
 # epsilon = 0.1
@@ -363,10 +375,11 @@ M = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
 # LCA[x][a]，任意两个结点的最近公共祖先所在层
 LCA = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
 LCA_level(D, 0, num_of_nodes-1)
+print(LCA)
 # 构建S，每一层的结点和对应的父亲结点如下
 get_S(HST_tree, D)
 # 计算概率矩阵
-# cal_pro(epsilon)
+cal_pro(epsilon)
 # 测试
 W_w = []
 MA = []

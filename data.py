@@ -73,7 +73,7 @@ def data_pre(lt=3000, lw=5000, m=100, sd=20):
     fo.close()
 
 
-def pre_defined(N=100):
+def pre_defined(N=50):
     a = np.random.uniform(-100, 100, size=(N,2))
     re = []
     for i in a:
