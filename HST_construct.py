@@ -22,13 +22,14 @@ def max_dis(V):
     return d
 
 class HST_C(object):
-    def __init__(self, metrixs): # 创建对象同时要执行的代码
-        self.metrixs = metrixs
-        self.maxD = max_dis(metrixs)
+    def __init__(self, matrixs): # 创建对象同时要执行的代码
+        self.matrixs = matrixs
+        self.maxD = max_dis(matrixs)
         self.D = math.ceil(math.log(2*self.maxD,2))
         self.num_of_nodes = 0
         # beta
         self.beta = random.uniform(0.5,1)
+        self.beta = 0.5
         # 每一层的结点集合
         self.S = [[] for i in range(self.D+1)]
         # 划分距离
@@ -56,7 +57,7 @@ class HST_C(object):
         if i < 0:
             return
         T = tree[0]
-        print('当前根节点；',T,' 集合大小：',len(T),' 当前层数：',i)
+        # print('当前根节点；',T,' 集合大小：',len(T),' 当前层数：',i)
         self.r[i] = self.beta*pow(2,i)
         while T != []:
             temp = []
@@ -75,8 +76,38 @@ class HST_C(object):
                 T = new_T
 
         self.c = max(self.c, len(tree))
-            
+        # print('当前最大分支数：',self.c)
 
+    def add_fake_nodes(self, HST_tree, level):
+        """
+        添加fake nodes\n
+        :param HST_tree: 待补充fake nodes的树，第一个元素是根节点\n
+        :param level: 新结点的层数\n
+        """
+        if level < 0:
+            return
+        l = len(HST_tree)
+        # 对应数量 c-l 的fake nodes
+        for i in range(self.c-l):
+            HST_tree.append([])
+        # 遍历HST_tree的子节点
+        for i in range(len(HST_tree)-1):
+            self.add_fake_nodes(HST_tree[i+1], level-1)
+
+    def get_S(self, HST_tree, level):
+        """
+        构建S[D]\n
+        :param HST_tree: 树\n
+        :param level: 当前根结点的层数\n
+        """
+        if level < 0:
+            return
+        if len(HST_tree) != 0:
+            self.S[level].append(HST_tree[0])
+        elif level == 0:
+            self.S[level].append(HST_tree)
+        for i in range(len(HST_tree)-1):
+            self.get_S(HST_tree[i+1], level-1)
 
     def print_tree(self, HST_tree, level):
         """
@@ -94,21 +125,7 @@ class HST_C(object):
         for i in range(len(HST_tree)-1):
             self.print_tree(HST_tree[i+1], level-1)
 
-    def get_S(self, HST_tree, level):
-        """
-        构建S[D]\n
-        :param HST_tree: 树\n
-        :param level: 当前根结点的层数\n
-        """
-        if level < 0:
-            return
-        if len(HST_tree) != 0:
-            self.S[level].append(HST_tree[0])
-        elif level == 0:
-            self.S[level].append(HST_tree)
-        for i in range(len(HST_tree)-1):
-            self.get_S(HST_tree[i+1], level-1)
-
+    # 获取i和j的最近公共祖先所在层数
     def LCA_lvl(self, i, j):
         re = 0
         if i == j:
@@ -126,23 +143,44 @@ class HST_C(object):
         """
         :param V: 原空间上的点的集合\n
         """
-        # 构造HST树
-        HST_tree = self.HST(self.metrixs)
-        print('HST = ',HST_tree)
-        self.construct(HST_tree, self.D)
+        HST_tree = self.HST(self.matrixs)
+        # print('HST = ',HST_tree)
+        # 建树
+        self.construct(HST_tree, self.D-1)
+        self.add_fake_nodes(HST_tree, self.D-1)
+        # self.print_tree(HST_tree, self.D)
+        # 得到每层的节点（fake nodes没有建）
         self.get_S(HST_tree, self.D)
         return HST_tree
 
 
-metrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
+matrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
+# matrixs = [
+#     {'x': 1,'y': 1},
+#     {'x': 2,'y': 3},
+#     {'x': 5,'y': 3},
+#     {'x': 4,'y': 4}
+# ]
 # V的一个随机序列PI
-random.shuffle(metrixs)
+# random.shuffle(matrixs)
 # 随机序列作为建树的根节点
-Test = HST_C(metrixs)
+Test = HST_C(matrixs)
+# 构建的树
 HST_tree = Test.algorithm_1()
+Ture_S = []
+for i in range(len(Test.S[0])):
+    if Test.S[0][i] != []:
+        Ture_S.append({
+            'x' : Test.S[0][i][0]['x'],
+            'y' : Test.S[0][i][0]['y'],
+            'id' : i 
+        })
+print(Ture_S)
+print(len(Ture_S))
+print('beta = ',Test.beta)
 print('最远距离：',Test.maxD)
 print('最高层数：',Test.D)
-print('beta = ',Test.beta)
-print('根节点：',Test.S[Test.D])
-print('叶子节点：',Test.S[0])
+print('分支数：',Test.c)
+# print('根节点：',Test.S[Test.D])
+# print('叶子节点：',Test.S[0])
 print('叶子节点数：',len(Test.S[0]))

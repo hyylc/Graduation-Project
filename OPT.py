@@ -22,17 +22,17 @@ workers = worker_test
 tasks = task_test
 
 
-# workers = [
-#     {'x': 2,'y': 3,'epsilon': 0.01},
-#     {'x': 2,'y': 2,'epsilon': 0.1},
-#     {'x': 5,'y': 5,'epsilon': 0.2},
-# ]
+workers = [
+    {'x': 2,'y': 3,'epsilon': 0.01},
+    {'x': 2,'y': 2,'epsilon': 0.1},
+    {'x': 5,'y': 5,'epsilon': 0.2},
+]
 
-# tasks = [
-#     {'x': 1,'y': 0,'epsilon': 0.1},
-#     {'x': 1,'y': 3,'epsilon': 0.1},
-#     {'x': 6,'y': 2,'epsilon': 0.1},
-# ]
+tasks = [
+    {'x': 1,'y': 0,'epsilon': 0.1},
+    {'x': 1,'y': 3,'epsilon': 0.1},
+    {'x': 6,'y': 2,'epsilon': 0.1},
+]
 
 n = len(tasks)
 m = len(workers)

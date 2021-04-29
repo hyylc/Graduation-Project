@@ -3,7 +3,6 @@ import matplotlib.pyplot as plt
 from scipy.stats import multivariate_normal
 from mpl_toolkits.mplot3d import Axes3D
 import random
-# %matplotlib inline
 plt.rcParams['font.sans-serif']=['SimHei'] #显示中文标签
 plt.rcParams['axes.unicode_minus']=False   #这两行需要手动设置
 
@@ -91,7 +90,42 @@ def pre_defined(N=50):
     fo.close()
     return re
 
-# 固定其中三项
+def data_pre1(lt=3000, lw=5000, m=100, sd=20):
+    worker, _ = Gaussian_Distribution(M=lw)
+    task, _ = Gaussian_Distribution(M=lt)
+    for i in range(5):
+        a=0.2+0.2*i
+        b=1.2
+        w_e = uniform_Distribution(a,b,M=lw)
+        t_e = uniform_Distribution(a,b,M=lt)
+        w_x,w_y = worker.T 
+        t_x,t_y = task.T
+        re_worker = []
+        re_task = []
+        for i in range(lw):
+            tmp = {
+                'x' : round(w_x[i],3),
+                'y' : round(w_y[i],3),
+                'epsilon' : round(w_e[i],3)
+            }
+            re_worker.append(tmp)
+        for i in range(lt):
+            tmp = {
+                'x' : round(t_x[i],3),
+                'y' : round(t_y[i],3),
+                'epsilon' : round(t_e[i],3)
+            }
+            re_task.append(tmp)
+        # 打开一个文件
+        fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+'_'+str(a)+'_'+str(b)+".txt", "w")
+        fo.write(str(re_task))
+        fo.write('\n')
+        fo.write(str(re_worker))
+        # 关闭打开的文件
+        fo.close()
+
+
+# 固定其中三项，TBF的隐私参数默认0.6  PTBF的隐私参数默认0.6-1.2
 T_size = [1000,2000,3000,4000,5000]
 W_size = [3000,4000,5000,6000,7000]
 mean = [50,75,100,125,150]
@@ -108,10 +142,14 @@ sigma = [10,15,20,25,30]
 # for i in range(len(sigma)):
 #     data_pre(sd=sigma[i])
 
-
 # 生成预定义的点
-pre_node = pre_defined()
-print(pre_node)
+# pre_node = pre_defined()
+# print(pre_node)
+
+# 生成5个个性隐私参数的文件
+# data_pre1()
+
+
 
 # '''二元高斯散点图举例'''
 # data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
