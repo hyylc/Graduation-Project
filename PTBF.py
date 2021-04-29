@@ -42,26 +42,20 @@ def construct(tree, i):
     T = tree[0]
     r[i] = beta*pow(2,i)
     global c
-    for vertex_i in PI:
-        if len(T) == 0:
-            return
+    while T != []:
         temp = []
-        U = []
         new_T = []
-        for vertex_j in metrixs:
-            if dis(vertex_i,vertex_j) <= r[i]:
+        for vertex_j in T:
+            if dis(T[0],vertex_j) <= r[i]:
                 temp.append(vertex_j)
-        # temp 和 T 的交集
-        for vertex in temp:
-            if vertex in T:
-                U.append(vertex)
         # T - U
         for vertex in T:
-            if vertex not in U:
+            if vertex not in temp:
                 new_T.append(vertex)
+        # print('待插入的集合大小：',len(U))
         # U 不为空，新建结点，递归构建树
-        if len(U) != 0:
-            HST_U = HST(U)
+        if len(temp) != 0:
+            HST_U = HST(temp)
             # print('距离点', vertex_i, r[i], '的点有', U)
             tree.append(HST_U)
             # S[i].append(HST_U)
@@ -70,7 +64,8 @@ def construct(tree, i):
             T = new_T
             # print('当前T为 ',T)
 
-    c = max(c, len(tree))    
+    c = max(c, len(tree))
+    print('当前最大分支数',c-1)   
         
 
 def add_fake_nodes(HST_tree, level):
@@ -129,23 +124,34 @@ def print_leaf(HST_tree, level):
         print_leaf(HST_tree[i+1], level-1)
 
 # 每两个结点之间的最近公共祖先所在层数
-def LCA_level(level, start, end):
-    if start == end:
-        LCA[start][end] = 0
-        return
-    for i in range(c-1):
-        for j in range(c-1):
-            if i != j:
-                for k in range(pow(c-1, level-1)):
-                    for l in range(pow(c-1, level-1)):
-                        LCA[start+i*pow(c-1, level-1)+k][start+j*pow(c-1, level-1)+l] = level
-    for i in range(c-1):
-        LCA_level(level-1, start+i*pow(c-1, level-1), start+(i+1)*pow(c-1, level-1)-1)
+# def LCA_level(level, start, end):
+#     if start == end:
+#         LCA[start][end] = 0
+#         return
+#     for i in range(c-1):
+#         for j in range(c-1):
+#             if i != j:
+#                 for k in range(pow(c-1, level-1)):
+#                     for l in range(pow(c-1, level-1)):
+#                         LCA[start+i*pow(c-1, level-1)+k][start+j*pow(c-1, level-1)+l] = level
+#     for i in range(c-1):
+#         LCA_level(level-1, start+i*pow(c-1, level-1), start+(i+1)*pow(c-1, level-1)-1)
 
 def print_format(M):
     for i in range(len(M)):
         print(M[i])
 
+def LCA_lvl(i,j):
+    re = 0
+    if i == j:
+        return re
+    while i!=j:
+        re = re + 1
+        i = int(i/(c-1))
+        j = int(j/(c-1))
+        # print('i = ',i,', j = ',j)
+    re = re + 1
+    return re
 
 # 算法1
 def algorithm_1(V):
@@ -155,7 +161,7 @@ def algorithm_1(V):
     # 构造HST树
     HST_tree = HST(V)
     construct(HST_tree, D)
-    add_fake_nodes(HST_tree, D)
+    # add_fake_nodes(HST_tree, D)
     # print(HST_tree)
     return HST_tree
 
@@ -213,16 +219,20 @@ def algorithm_3(leaf):
     return s
 
 def cal_pro(epsilon):
+
     global WT
-    # 扰动概率
+    # WT必须初始化
     WT = 1
     for i in range(D+1):
         wt[i] = math.exp((4-pow(2,i+2))*epsilon)
     for i in range(D):
         WT += pow((c-1),i)*(c-2)*wt[i+1]
-    for i in range(num_of_nodes):
-        for j in range(num_of_nodes):
-            M[i][j] = wt[LCA[i][j]]/WT
+    # print('当前用户隐私预算：',epsilon)
+    # print('wt向量：',wt)
+    # print('WT = ',WT)
+    # for i in range(num_of_nodes):
+    #     for j in range(num_of_nodes):
+    #         M[i][j] = wt[LCA[i][j]]/WT
 
     # 随机游走概率
     tw[0] = WT
@@ -275,6 +285,7 @@ def algorithm_4(node_list):
                 if tmp_dis < shortest_dis:
                     shortest_dis = tmp_dis
                     shortest_node = i
+        # print('当前用户隐私预算：',node_list[item]['epsilon'])
         cal_pro(node_list[item]['epsilon'])
         # 调用算法3获得扰动结果
         # print('task',item,'最近的点',shortest_node)
@@ -287,13 +298,13 @@ def algorithm_4(node_list):
         for w in W_w:
             # print(w)
             # tmp是公共祖先层数
-            tmp = LCA[w['position']][perturbed_node]
+            tmp = LCA_lvl(w['position'],perturbed_node)
             # print(tmp)
             if tmp < dis_abs:
                 dis_abs = tmp
                 match = w
         MA.append({
-            't': item+1,
+            't': item,
             'w': match['id']
         })
         W_w.remove(match)
@@ -301,12 +312,42 @@ def algorithm_4(node_list):
 
 
 # 初始化点
-metrixs = [
-    {'x': 1,'y': 1},
-    {'x': 2,'y': 3},
-    {'x': 5,'y': 3},
-    {'x': 4,'y': 4}
-]
+# metrixs = [
+#     {'x': 1,'y': 1},
+#     {'x': 2,'y': 3},
+#     {'x': 5,'y': 3},
+#     {'x': 4,'y': 4}
+# ]
+# workers = [
+#     {'x': 2,'y': 3,'epsilon': 0.01},
+#     {'x': 2,'y': 2,'epsilon': 0.1},
+#     {'x': 5,'y': 5,'epsilon': 0.2},
+# ]
+
+# tasks = [
+#     {'x': 1,'y': 0,'epsilon': 0.1},
+#     {'x': 1,'y': 3,'epsilon': 0.1},
+#     {'x': 6,'y': 2,'epsilon': 0.1},
+# ]
+# 初始化点
+metrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
+######数据集读取#####
+lt = 1000
+lw = 5000
+m = 100
+sd = 20
+# 测试worker集合和task集合
+fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
+test_data = fo.readlines()
+fo.close()
+task_test = eval(test_data[0])
+worker_test = eval(test_data[1])
+print(len(task_test))
+print(len(worker_test))
+workers = worker_test
+tasks = task_test
+
+
 # V的一个随机序列PI 
 PI = metrixs
 # random.shuffle(PI) 
@@ -321,65 +362,35 @@ beta = random.uniform(0.5,1)
 beta = 0.5
 print('beta:',beta)
 # 每一层的结点
-S = [[] for i in range(5)]
+S = [[] for i in range(D+1)]
 # 划分距离
 r = [0]*(D+1)
 # maximum number of branches in the tree
 c = 0
 # epsilon
-epsilon = 0.1
-WT = 1
+# epsilon = 0.1
 wt = [0 for i in range(D+1)]
 tw = [0 for i in range(D+1)]
 pu = [0 for i in range(D+1)]
-# 测试数据：worker集合和task集合
-######数据集读取#####
-lt = 3000
-lw = 5000
-m = 100
-sd = 20
-
-# fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
-# test_data = fo.readlines()
-# fo.close()
-# task_test = eval(test_data[0])
-# worker_test = eval(test_data[1])
-# print(len(task_test))
-# print(len(worker_test))
-# # 测试worker集合和task集合
-# workers = worker_test
-# tasks = task_test
-
-workers = [
-    {'x': 2,'y': 3,'epsilon': 0.01},
-    {'x': 2,'y': 2,'epsilon': 0.1},
-    {'x': 5,'y': 5,'epsilon': 0.2},
-]
-
-tasks = [
-    {'x': 1,'y': 0,'epsilon': 0.1},
-    {'x': 1,'y': 3,'epsilon': 0.1},
-    {'x': 6,'y': 2,'epsilon': 0.1},
-]
+WT = 1
+wt[0] = 1
 
 ######代码运行######
 # epsilon = 0.1
-# 每层向上走的概率： [0.606, 0.564, 0.304, 0.075, 0]
-# 结点0扰动概率： [0.394, 0.264, 0.119, 0.119, 0.024, 0.024, 0.024, 0.024, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001, 0.001]
 # algorithm_1构造树
 HST_tree = algorithm_1(metrixs)
 # 叶子结点数
 num_of_nodes = pow(c-1, D)
 # 初始化概率矩阵
-M = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
+# M = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
 # LCA[x][a]，任意两个结点的最近公共祖先所在层
-LCA = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
-LCA_level(D, 0, num_of_nodes-1)
-print(LCA)
+# LCA = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
+# LCA_level(D, 0, num_of_nodes-1)
+# print(LCA)
 # 构建S，每一层的结点和对应的父亲结点如下
 get_S(HST_tree, D)
 # 计算概率矩阵
-cal_pro(epsilon)
+# cal_pro(epsilon)
 # 测试
 W_w = []
 MA = []
@@ -388,11 +399,16 @@ for i in range(len(workers)):
     # 返回扰动的下标
     re = worker_peturbed(workers[i])
     tmp = {
-        'id' : i+1,
+        'id' : i,
         'position' : re
     }
     W_w.append(tmp)
 # print(W_w)
 # print('\n')
 algorithm_4(tasks)
-print('匹配结果：',MA)
+# print('匹配结果：',MA)
+print("匹配结果大小：",len(MA))
+total_distance = 0
+for i in MA:
+    total_distance += dis(tasks[i['t']],workers[i['w']])
+print(total_distance)

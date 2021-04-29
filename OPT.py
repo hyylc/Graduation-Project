@@ -36,9 +36,13 @@ tasks = task_test
 
 n = len(tasks)
 m = len(workers)
-matrix = [[0 for i in range(m)] for i in range(n)]
 
-# 计算权重矩阵（即真实距离）
+# matrix = [[0 for i in range(n)] for i in range(m)]
+# for i in range(m):
+#     for j in range(n):
+#         matrix[i][j] = dis(workers[i],tasks[j])
+
+matrix = [[0 for i in range(m)] for i in range(n)]
 for i in range(n):
     for j in range(m):
         matrix[i][j] = dis(tasks[i],workers[j])
