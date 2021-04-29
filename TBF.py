@@ -44,28 +44,20 @@ def construct(tree, i):
     print('当前集合大小：',len(T))
     print('划分距离：',r[i])
     global c
-    for vertex_i in PI:
-        if len(T) == 0:
-            return
+    while T != []:
         temp = []
-        U = []
         new_T = []
-        for vertex_j in metrixs:
-            if dis(vertex_i,vertex_j) <= r[i]:
+        for vertex_j in T:
+            if dis(T[0],vertex_j) <= r[i]:
                 temp.append(vertex_j)
-        # temp 和 T 的交集
-        for vertex in temp:
-            if vertex in T:
-                U.append(vertex)
         # T - U
         for vertex in T:
-            if vertex not in U:
+            if vertex not in temp:
                 new_T.append(vertex)
         # print('待插入的集合大小：',len(U))
-        
         # U 不为空，新建结点，递归构建树
-        if len(U) != 0:
-            HST_U = HST(U)
+        if len(temp) != 0:
+            HST_U = HST(temp)
             # print('距离点', vertex_i, r[i], '的点有', U)
             tree.append(HST_U)
             # S[i].append(HST_U)
@@ -137,22 +129,34 @@ def print_leaf(HST_tree, level):
         print_leaf(HST_tree[i+1], level-1)
 
 # 每两个结点之间的最近公共祖先所在层数
-def LCA_level(level, start, end):
-    if start == end:
-        LCA[start][end] = 0
-        return
-    for i in range(c-1):
-        for j in range(c-1):
-            if i != j:
-                for k in range(pow(c-1, level-1)):
-                    for l in range(pow(c-1, level-1)):
-                        LCA[start+i*pow(c-1, level-1)+k][start+j*pow(c-1, level-1)+l] = level
-    for i in range(c-1):
-        LCA_level(level-1, start+i*pow(c-1, level-1), start+(i+1)*pow(c-1, level-1)-1)
+# def LCA_level(level, start, end):
+#     if start == end:
+#         LCA[start][end] = 0
+#         return
+#     for i in range(c-1):
+#         for j in range(c-1):
+#             if i != j:
+#                 for k in range(pow(c-1, level-1)):
+#                     for l in range(pow(c-1, level-1)):
+#                         LCA[start+i*pow(c-1, level-1)+k][start+j*pow(c-1, level-1)+l] = level
+#     for i in range(c-1):
+#         LCA_level(level-1, start+i*pow(c-1, level-1), start+(i+1)*pow(c-1, level-1)-1)
 
 def print_format(M):
     for i in range(len(M)):
         print(M[i])
+
+def LCA_lvl(i,j):
+    re = 0
+    if i == j:
+        return re
+    while i!=j:
+        re = re + 1
+        i = int(i/(c-1))
+        j = int(j/(c-1))
+        # print('i = ',i,', j = ',j)
+    re = re + 1
+    return re
 
 
 # 算法1
@@ -163,7 +167,7 @@ def algorithm_1(V):
     # 构造HST树
     HST_tree = HST(V)
     construct(HST_tree, D)
-    add_fake_nodes(HST_tree, D)
+    # add_fake_nodes(HST_tree, D)
     # print(HST_tree)
     return HST_tree
 
@@ -271,13 +275,16 @@ def algorithm_4(node_list):
         for w in W_w:
             # print(w)
             # tmp是公共祖先层数
-            tmp = LCA[w['position']][perturbed_node]
+            # tmp = LCA[w['position']][perturbed_node]
+            # print('task:',w['position'],' worker:',perturbed_node)
+            tmp = LCA_lvl(w['position'],perturbed_node)
             # print(tmp)
             if tmp < dis_abs:
                 dis_abs = tmp
                 match = w
+        # print('最小公共祖先层数：',tmp)
         MA.append({
-            't': item+1,
+            't': item,
             'w': match['id']
         })
         W_w.remove(match)
@@ -290,10 +297,10 @@ def cal_pro(epsilon):
     for i in range(D):
         WT += pow((c-1),i)*(c-2)*wt[i+1]
     print('WT = ',WT)
-    for i in range(num_of_nodes):
-        for j in range(num_of_nodes):
-            # M[i][j] = round(wt[LCA[i][j]]/WT , 3)
-            M[i][j] = wt[LCA[i][j]]/WT
+    # for i in range(num_of_nodes):
+    #     for j in range(num_of_nodes):
+    #         # M[i][j] = round(wt[LCA[i][j]]/WT , 3)
+    #         M[i][j] = wt[LCA[i][j]]/WT
 
     print('wt向量：',wt)
     # 随机游走概率
@@ -382,8 +389,6 @@ wt[0] = 1
 
 
 
-
-
 ######代码运行######
 
 # algorithm_1构造树
@@ -395,10 +400,10 @@ print('最终分支数：',c-1)
 num_of_nodes = pow(c-1, D)
 print('叶子节点数：',num_of_nodes)
 # 初始化概率矩阵
-M = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
+# M = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
 # LCA[x][a]，任意两个结点的最近公共祖先所在层
-LCA = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
-LCA_level(D, 0, num_of_nodes-1)
+# LCA = [[0 for i in range(num_of_nodes)] for i in range(num_of_nodes)]
+# LCA_level(D, 0, num_of_nodes-1)
 # print(LCA)
 # 构建S，每一层的结点和对应的父亲结点如下
 get_S(HST_tree, D-1)
@@ -413,7 +418,7 @@ for i in range(len(workers)):
     # 返回扰动的下标
     re = worker_peturbed(workers[i])
     tmp = {
-        'id' : i+1,
+        'id' : i,
         'position' : re
     }
     W_w.append(tmp)
@@ -421,5 +426,9 @@ for i in range(len(workers)):
 algorithm_4(tasks)
 # print('匹配结果：',MA)
 print("匹配结果大小：",len(MA))
+total_distance = 0
+for i in MA:
+    total_distance += dis(tasks[i['t']],workers[i['w']])
+print(total_distance)
 # 待完成的内容：
 # 根据MA计算总距离
