@@ -7,7 +7,7 @@ plt.rcParams['font.sans-serif']=['SimHei'] #显示中文标签
 plt.rcParams['axes.unicode_minus']=False   #这两行需要手动设置
 
 # 生成高斯分布
-def Gaussian_Distribution(N=2, M=3000, m=100, sigma=20):
+def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
     '''
     Parameters
     ----------
@@ -33,14 +33,14 @@ def Gaussian_Distribution(N=2, M=3000, m=100, sigma=20):
 
 
 # 生成均匀分布
-def uniform_Distribution(a=0.6, b=1.2, M=3000):
+def uniform_Distribution(a=0.6, b=1.2, M=300):
     re = []
     for i in range(M):
         re.append(round(random.uniform(a, b),3))
     return re
 
 
-def data_pre(lt=3000, lw=5000, m=100, sd=20):
+def data_pre(lt=300, lw=500, m=100, sd=20):
     worker, _ = Gaussian_Distribution(M=lw)
     task, _ = Gaussian_Distribution(M=lt)
     w_e = uniform_Distribution(M=lw)
@@ -72,7 +72,7 @@ def data_pre(lt=3000, lw=5000, m=100, sd=20):
     fo.close()
 
 
-def pre_defined(N=50):
+def pre_defined(N=20):
     a = np.random.uniform(-100, 100, size=(N,2))
     re = []
     for i in a:
@@ -90,7 +90,7 @@ def pre_defined(N=50):
     fo.close()
     return re
 
-def data_pre1(lt=3000, lw=5000, m=100, sd=20):
+def data_pre1(lt=300, lw=500, m=100, sd=20):
     worker, _ = Gaussian_Distribution(M=lw)
     task, _ = Gaussian_Distribution(M=lt)
     for i in range(5):
@@ -126,28 +126,28 @@ def data_pre1(lt=3000, lw=5000, m=100, sd=20):
 
 
 # 固定其中三项，TBF的隐私参数默认0.6  PTBF的隐私参数默认0.6-1.2
-T_size = [1000,2000,3000,4000,5000]
-W_size = [3000,4000,5000,6000,7000]
+T_size = [100,200,300,400,500]
+W_size = [300,400,500,600,700]
 mean = [50,75,100,125,150]
 sigma = [10,15,20,25,30]
 
 
 # 生成测试的点
-# for i in range(len(T_size)):
-#     data_pre(lt=T_size[i])
-# for i in range(len(W_size)):
-#     data_pre(lw=W_size[i])
-# for i in range(len(mean)):
-#     data_pre(m=mean[i])
-# for i in range(len(sigma)):
-#     data_pre(sd=sigma[i])
+for i in range(len(T_size)):
+    data_pre(lt=T_size[i])
+for i in range(len(W_size)):
+    data_pre(lw=W_size[i])
+for i in range(len(mean)):
+    data_pre(m=mean[i])
+for i in range(len(sigma)):
+    data_pre(sd=sigma[i])
 
 # 生成预定义的点
-# pre_node = pre_defined()
+pre_node = pre_defined()
 # print(pre_node)
 
 # 生成5个个性隐私参数的文件
-# data_pre1()
+data_pre1()
 
 
 

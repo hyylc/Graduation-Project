@@ -5,8 +5,8 @@ def dis(i,j):
     return round(math.sqrt(math.pow((i['x'] - j['x']), 2) + math.pow((i['y'] - j['y']), 2)),3)
 
 ######数据集读取#####
-lt = 1000
-lw = 5000
+lt = 100
+lw = 500
 m = 100
 sd = 20
 

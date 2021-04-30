@@ -123,20 +123,6 @@ def print_leaf(HST_tree, level):
     for i in range(len(HST_tree)-1):
         print_leaf(HST_tree[i+1], level-1)
 
-# 每两个结点之间的最近公共祖先所在层数
-# def LCA_level(level, start, end):
-#     if start == end:
-#         LCA[start][end] = 0
-#         return
-#     for i in range(c-1):
-#         for j in range(c-1):
-#             if i != j:
-#                 for k in range(pow(c-1, level-1)):
-#                     for l in range(pow(c-1, level-1)):
-#                         LCA[start+i*pow(c-1, level-1)+k][start+j*pow(c-1, level-1)+l] = level
-#     for i in range(c-1):
-#         LCA_level(level-1, start+i*pow(c-1, level-1), start+(i+1)*pow(c-1, level-1)-1)
-
 def print_format(M):
     for i in range(len(M)):
         print(M[i])
@@ -150,7 +136,7 @@ def LCA_lvl(i,j):
         i = int(i/(c-1))
         j = int(j/(c-1))
         # print('i = ',i,', j = ',j)
-    re = re + 1
+    # re = re + 1
     return re
 
 # 算法1
@@ -201,7 +187,7 @@ def algorithm_3(leaf):
         index = node*(c-1)+i
         if index != ori_node:
             anc.append(index)
-    # print('第',level,'层结点:',node,'向下选择:',anc)
+    print('第',level,'层结点:',node,'向下选择:',anc)
     s = random.choice(anc)
     node = s
     level -= 1
@@ -212,7 +198,7 @@ def algorithm_3(leaf):
         for i in range(c-1):
             index = node*(c-1)+i
             anc.append(index)
-        # print('第',level,'层结点:',node,'向下选择:',anc)
+        print('第',level,'层结点:',node,'向下选择:',anc)
         s = random.choice(anc)
         node = s
         level -= 1
@@ -247,25 +233,22 @@ def cal_pro(epsilon):
 
 # 为worker进行扰动，返回work扰动后的位置（用W'序列描述）
 def worker_peturbed(node):
-    '''
-    
-    '''
     # 在初始化的点集中找到最近的点
     shortest_node = 1
     shortest_dis = 1e5 
     # print(S[0])
-    for i in range(len(Ture_S)):
-        if S[0][i] != []:
-            tmp_dis = dis(node,Ture_S[i])
-            if tmp_dis < shortest_dis:
-                shortest_dis = tmp_dis
-                shortest_node = i
+    for i in range(len(True_S)):
+        tmp_dis = dis(node,True_S[i])
+        if tmp_dis < shortest_dis:
+            shortest_dis = tmp_dis
+            shortest_node = True_S[i]['id']
     cal_pro(node['epsilon'])
+    print('向上概率：',pu)
     # 调用算法3获得扰动结果
-    # print(node,'最近的点',shortest_node)
+    print(node,'最近的点',shortest_node)
     # 调用算法3获得扰动结果
     perturbed_node = algorithm_3(shortest_node)
-    # print(node,'扰动结果为',perturbed_node)
+    print(node,'扰动结果为',perturbed_node)
     return perturbed_node
     
 
@@ -279,79 +262,81 @@ def algorithm_4(node_list):
         shortest_node = 1
         shortest_dis = 1e5 
         # 和叶子节点比较
-        for i in range(len(Ture_S)):
-            if S[0][i] != []:
-                tmp_dis = dis(node_list[item],Ture_S[i])
+        for i in range(len(True_S)):
+                tmp_dis = dis(node_list[item],True_S[i])
                 if tmp_dis < shortest_dis:
                     shortest_dis = tmp_dis
-                    shortest_node = i
+                    shortest_node = True_S[i]['id']
         # print('当前用户隐私预算：',node_list[item]['epsilon'])
         cal_pro(node_list[item]['epsilon'])
+        print('向上概率：',pu)
         # 调用算法3获得扰动结果
-        # print('task',item,'最近的点',shortest_node)
+        print('task',item,'最近的点',shortest_node)
         # 调用算法3获得扰动结果
         perturbed_node = algorithm_3(shortest_node)
-        # print('task',item,'扰动结果为',perturbed_node)
+        print('task',item,'扰动结果为',perturbed_node)
         # 分配worker，在树的叶子节点中(也就是W')找到一个最近的点，从W'删除点，将这次匹配记录到M中
-        dis_abs = D
+        lvl = D
         match = W_w[0]
         for w in W_w:
             # print(w)
             # tmp是公共祖先层数
             tmp = LCA_lvl(w['position'],perturbed_node)
-            # print(tmp)
-            if tmp < dis_abs:
-                dis_abs = tmp
+            print(w['position'],' ',perturbed_node,' 公共祖先：',tmp)
+            if tmp < lvl:
+                lvl = tmp
                 match = w
+        print('最小公共祖先层数：',lvl)
         MA.append({
             't': item,
             'w': match['id']
         })
+        print('匹配结果：',MA[-1])
         W_w.remove(match)
 
 
 
-# # 初始化点
-# matrixs = [
-#     {'x': 1,'y': 1},
-#     {'x': 2,'y': 3},
-#     {'x': 5,'y': 3},
-#     {'x': 4,'y': 4}
-# ]
-# workers = [
-#     {'x': 2,'y': 3,'epsilon': 0.01},
-#     {'x': 2,'y': 2,'epsilon': 0.1},
-#     {'x': 5,'y': 5,'epsilon': 0.2},
-# ]
-
-# tasks = [
-#     {'x': 1,'y': 0,'epsilon': 0.1},
-#     {'x': 1,'y': 3,'epsilon': 0.1},
-#     {'x': 6,'y': 2,'epsilon': 0.1},
-# ]
 # 初始化点
-matrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
-######数据集读取#####
-lt = 1000
-lw = 5000
-m = 100
-sd = 20
-# 测试worker集合和task集合
-fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
-test_data = fo.readlines()
-fo.close()
-task_test = eval(test_data[0])
-worker_test = eval(test_data[1])
-print(len(task_test))
-print(len(worker_test))
-workers = worker_test
-tasks = task_test
+matrixs = [
+    {'x': 1,'y': 1},
+    {'x': 2,'y': 3},
+    {'x': 5,'y': 3},
+    {'x': 4,'y': 4}
+]
+workers = [
+    {'x': 2,'y': 3,'epsilon': 0.01},
+    {'x': 2,'y': 2,'epsilon': 0.1},
+    {'x': 5,'y': 5,'epsilon': 0.2},
+]
+
+tasks = [
+    {'x': 1,'y': 0,'epsilon': 0.1},
+    {'x': 1,'y': 3,'epsilon': 0.1},
+    {'x': 6,'y': 2,'epsilon': 0.1},
+]
+# # 初始化点
+# matrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
+# ######数据集读取#####
+# lt = 1000
+# lw = 5000
+# m = 100
+# sd = 20
+# # 测试worker集合和task集合
+# fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
+# test_data = fo.readlines()
+# fo.close()
+# task_test = eval(test_data[0])
+# worker_test = eval(test_data[1])
+# print(len(task_test))
+# print(len(worker_test))
+# workers = worker_test
+# tasks = task_test
 
 
 # V的一个随机序列PI 
 PI = matrixs
 # random.shuffle(PI) 
-print('V的一个随机序列:',PI)
+# print('V的一个随机序列:',PI)
 # 树的最高层D   （层数0-1- -D）
 maxD = max_dis(matrixs) 
 D = math.ceil(math.log(2*maxD,2))
@@ -379,15 +364,16 @@ wt[0] = 1
 # epsilon = 0.1
 # algorithm_1构造树
 HST_tree = algorithm_1(matrixs)
-Ture_S = []
+get_S(HST_tree, D)
+True_S = []
 for i in range(len(S[0])):
     if S[0][i] != []:
-        Ture_S.append({
+        True_S.append({
             'x' : S[0][i][0]['x'],
             'y' : S[0][i][0]['y'],
             'id' : i 
         })
-print(Ture_S)
+print(True_S)
 print('最终分支数：',c-1)
 # 叶子结点数
 num_of_nodes = pow(c-1, D)
@@ -398,7 +384,7 @@ num_of_nodes = pow(c-1, D)
 # LCA_level(D, 0, num_of_nodes-1)
 # print(LCA)
 # 构建S，每一层的结点和对应的父亲结点如下
-get_S(HST_tree, D)
+
 # 计算概率矩阵
 # cal_pro(epsilon)
 # 测试
@@ -413,13 +399,13 @@ for i in range(len(workers)):
         'position' : re
     }
     W_w.append(tmp)
-# print(W_w)
+print(W_w)
 # print('\n')
 algorithm_4(tasks)
-# print('匹配结果：',MA)
+print('匹配结果：',MA)
 print("匹配结果大小：",len(MA))
 total_distance = 0
 for i in MA:
     total_distance += dis(tasks[i['t']],workers[i['w']])
-print(total_distance)
+print('总距离：',total_distance)
 print('叶子节点数量：',len(S[0]))

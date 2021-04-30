@@ -155,7 +155,7 @@ def LCA_lvl(i,j):
         i = int(i/(c-1))
         j = int(j/(c-1))
         # print('i = ',i,', j = ',j)
-    re = re + 1
+    # re = re + 1
     return re
 
 
@@ -198,6 +198,7 @@ def algorithm_3(leaf):
     
     # 结点保持不变，无扰动，直接返回
     if level == 0:
+        # print(leaf,'扰动结果为',leaf)
         return leaf
 
     # 扰动
@@ -222,6 +223,7 @@ def algorithm_3(leaf):
         s = random.choice(anc)
         node = s
         level -= 1
+    # print(leaf,'扰动结果为',s)
     return s
 
 
@@ -232,18 +234,20 @@ def worker_peturbed(node):
     '''
     # 在初始化的点集中找到最近的点
     shortest_node = 1
-    shortest_dis = 1e5 
+    shortest_dis = 1e5
     # print(S[0])
     # print(len(S[0]))
-    for i in range(len(Ture_S)):
-        if S[0][i] != []:
-            tmp_dis = dis(node,Ture_S[i])
-            if tmp_dis < shortest_dis:
-                shortest_dis = tmp_dis
-                # 下标i有一点问题
-                shortest_node = i
+    for i in range(len(True_S)):
+        tmp_dis = dis(node,True_S[i])
+        if tmp_dis < shortest_dis:
+            # print('距离',True_S[i]['id'],' ',tmp_dis)
+            shortest_dis = tmp_dis
+            #shortest_node是真实节点在树中的下标
+            shortest_node = True_S[i]['id']
+    if shortest_node not in nearest:
+        nearest.append(shortest_node)
     # 调用算法3获得扰动结果
-    # print(node,'最近的点',shortest_node)
+    # print('worker',node,'最近的点',shortest_node)
     # 调用算法3获得扰动结果
     perturbed_node = algorithm_3(shortest_node)
     # print(node,'扰动结果为',perturbed_node)
@@ -261,35 +265,35 @@ def algorithm_4(node_list):
         shortest_dis = 1e5 
         # 和叶子节点比较
         # print(len(S[0]))
-        for i in range(len(Ture_S)):
-            if S[0][i] != []:
-                tmp_dis = dis(node_list[item],Ture_S[i])
+        for i in range(len(True_S)):
+                tmp_dis = dis(node_list[item],True_S[i])
                 if tmp_dis < shortest_dis:
                     shortest_dis = tmp_dis
-                    shortest_node = i
+                    shortest_node = True_S[i]['id']
         # 调用算法3获得扰动结果
         # print('task',item,'最近的点',shortest_node)
         # 调用算法3获得扰动结果
         perturbed_node = algorithm_3(shortest_node)
-        # print('task',item,'扰动结果为',perturbed_node)
+        # print(item,'扰动结果为',perturbed_node)
         # 分配worker，在树的叶子节点中(也就是W')找到一个最近的点，从W'删除点，将这次匹配记录到M中
-        dis_abs = D
+        lvl = D
         match = W_w[0]
         for w in W_w:
             # print(w)
             # tmp是公共祖先层数
             # tmp = LCA[w['position']][perturbed_node]
-            # print('task:',w['position'],' worker:',perturbed_node)
+            # print('worker:',w['position'],' task:',perturbed_node)
             tmp = LCA_lvl(w['position'],perturbed_node)
-            # print(tmp)
-            if tmp < dis_abs:
-                dis_abs = tmp
+            # print(w['position'],' ',perturbed_node,' 公共祖先：',tmp)
+            if tmp < lvl:
+                lvl = tmp
                 match = w
-        # print('最小公共祖先层数：',tmp)
+        print('最小公共祖先层数：',lvl)
         MA.append({
             't': item,
             'w': match['id']
         })
+        print('匹配结果：',MA[-1])
         W_w.remove(match)
 
 def cal_pro(epsilon):
@@ -301,11 +305,6 @@ def cal_pro(epsilon):
     for i in range(D):
         WT += pow((c-1),i)*(c-2)*wt[i+1]
     print('wt向量：',wt)
-    # print('WT = ',WT)
-    # for i in range(num_of_nodes):
-    #     for j in range(num_of_nodes):
-    #         # M[i][j] = round(wt[LCA[i][j]]/WT , 3)
-    #         M[i][j] = wt[LCA[i][j]]/WT
 
     # 随机游走概率
     tw[0] = WT
@@ -321,16 +320,20 @@ def cal_pro(epsilon):
 
 
 # 初始化点
-matrixs = [{'x': 84.731, 'y': 96.679}, {'x': 73.091, 'y': 61.025}, {'x': 21.623, 'y': -8.691}, {'x': 50.285, 'y': 7.365}, {'x': 41.578, 'y': 17.63}, {'x': 0.318, 'y': -37.534}, {'x': -98.838, 'y': 53.716}, {'x': 58.639, 'y': -33.503}, {'x': -25.529, 'y': -49.588}, {'x': 23.783, 'y': -19.844}, {'x': -66.328, 'y': -67.78}, {'x': 62.693, 'y': 52.31}, {'x': -61.003, 'y': -9.276}, {'x': 34.647, 'y': -15.571}, {'x': -51.554, 'y': -47.571}, {'x': 86.764, 'y': -5.309}, {'x': 51.396, 'y': 37.299}, {'x': -6.494, 'y': -10.359}, {'x': 49.383, 'y': 24.996}, {'x': 25.421, 'y': -8.924}, {'x': -50.877, 'y': -54.115}, {'x': 32.117, 'y': -39.563}, {'x': 80.477, 'y': 0.959}, {'x': 98.764, 'y': -22.888}, {'x': 29.705, 'y': 34.432}, {'x': -51.847, 'y': -56.939}, {'x': 56.716, 'y': 43.291}, {'x': 29.84, 'y': -45.85}, {'x': 94.856, 'y': -8.871}, {'x': 79.392, 'y': -67.891}, {'x': 64.157, 'y': 43.384}, {'x': 2.768, 'y': 8.806}, {'x': -22.433, 'y': 58.618}, {'x': 53.405, 'y': 46.267}, {'x': 55.316, 'y': -80.415}, {'x': 81.293, 'y': 0.44}, {'x': -14.981, 'y': -90.645}, {'x': -39.731, 'y': -13.763}, {'x': 22.49, 'y': 50.28}, {'x': -56.507, 'y': 38.265}, {'x': -52.655, 'y': 39.0}, {'x': -67.125, 'y': -48.786}, {'x': -99.861, 'y': 6.899}, {'x': 37.119, 'y': -34.57}, {'x': 26.137, 'y': 16.669}, {'x': 98.419, 'y': 93.192}, {'x': 27.295, 'y': -91.1}, {'x': 79.559, 'y': -54.369}, {'x': 93.997, 'y': -86.435}, {'x': -26.949, 'y': 59.84}]
 ######数据集读取#####
-lt = 1000
-lw = 5000
+lt = 100
+lw = 500
 m = 100
 sd = 20
+pre = 20
 
-fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
-test_data = fo.readlines()
-fo.close()
+
+fo1 = open("predefined"+str(pre)+".txt", "r")
+matrixs = eval(fo1.readlines()[0])
+fo1.close()
+fo2 = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
+test_data = fo2.readlines()
+fo2.close()
 task_test = eval(test_data[0])
 worker_test = eval(test_data[1])
 print(len(task_test))
@@ -396,15 +399,15 @@ HST_tree = algorithm_1(PI)
 get_S(HST_tree, D)
 print(len(S[0]))
 
-Ture_S = []
+True_S = []
 for i in range(len(S[0])):
     if S[0][i] != []:
-        Ture_S.append({
+        True_S.append({
             'x' : S[0][i][0]['x'],
             'y' : S[0][i][0]['y'],
             'id' : i 
         })
-print(Ture_S)
+print(True_S)
 print('r = ',r)
 print('最终分支数：',c-1)
 # 叶子结点数
@@ -424,6 +427,7 @@ print(wt[0])
 # 测试
 W_w = []
 MA = []
+nearest = []
 # worker
 for i in range(len(workers)):
     # 返回扰动的下标
@@ -433,8 +437,8 @@ for i in range(len(workers)):
         'position' : re
     }
     W_w.append(tmp)
-# print(W_w)
-
+# print('W_w = ',W_w)
+print(nearest)
 algorithm_4(tasks)
 
 # print('匹配结果：',MA)
