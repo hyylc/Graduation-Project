@@ -6,7 +6,7 @@ import random
 plt.rcParams['font.sans-serif']=['SimHei'] #显示中文标签
 plt.rcParams['axes.unicode_minus']=False   #这两行需要手动设置
 
-# 生成高斯分布
+# 生成二维高斯分布
 def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
     '''
     Parameters
@@ -14,7 +14,7 @@ def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
     N 维度
     M 样本数
     m 样本均值
-    sigma: 样本方差
+    sigma: 样本标准差（5.5修改）
     
     Returns
     -------
@@ -22,7 +22,7 @@ def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
     Gaussian  高斯分布概率密度函数
     '''
     mean = np.zeros(N) + m  # 均值矩阵，每个维度的均值都为 m
-    cov = np.eye(N) * sigma  # 协方差矩阵，每个维度的方差都为 sigma
+    cov = np.eye(N) * pow(sigma,2)  # 协方差矩阵，每个维度的方差都为 sigma
     # 产生 N 维高斯分布数据
     data = np.random.multivariate_normal(mean, cov, M)
     # N 维数据高斯分布概率密度函数
@@ -32,7 +32,7 @@ def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
 
 
 
-# 生成均匀分布
+# 生成一维均匀分布
 def uniform_Distribution(a=0.6, b=1.2, M=300):
     re = []
     for i in range(M):
@@ -71,20 +71,27 @@ def data_pre(lt=300, lw=500, m=100, sd=20):
     # 关闭打开的文件
     fo.close()
 
-
-def pre_defined(N=20):
-    a = np.random.uniform(-100, 100, size=(N,2))
+# 生成二维均匀分布
+def pre_defined(N=4):
+    x = []
+    y = []
     re = []
-    for i in a:
-        tmp = {
-            'x' : round(i[0],3),
-            'y' : round(i[1],3)
-        }
-        re.append(tmp)
-    plt.scatter(a[:,0],a[:,1])
+    for i in range(5):
+        for j in range(5):
+            tmp = []
+            a = [(random.uniform(j*4*10,(j+1)*4*10),random.uniform(i*4*10,(i+1)*4*10)) for _ in range(N)]
+            for item in a:
+                x.append(item[0])
+                y.append(item[1])
+                tmp.append({
+                    'x' : round(item[0],3),
+                    'y' : round(item[1],3)
+                })
+            re.append(tmp)
+    plt.scatter(x,y)
     plt.show()
     # 打开一个文件
-    fo = open("predefined"+str(N)+".txt", "w")
+    fo = open("predefined.txt", "w")
     fo.write(str(re))
     # 关闭打开的文件
     fo.close()
@@ -142,24 +149,26 @@ for i in range(len(mean)):
 for i in range(len(sigma)):
     data_pre(sd=sigma[i])
 
-# 生成预定义的点
-pre_node = pre_defined()
-# print(pre_node)
 
 # 生成5个个性隐私参数的文件
 data_pre1()
 
 
 
-# '''二元高斯散点图举例'''
-# data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
-# for i in data:
-#     print(i)
-# x, y = data.T
-# print(len(data))
-# plt.scatter(x, y)
-# plt.title('服从均值=100，方差=20的二维正态分布散点图')
-# plt.xlabel("x")
-# plt.ylabel("y")
-# plt.grid(linewidth='1')
-# plt.show()
+# 生成预定义的点
+# 5.4备注：在25个块中，各自生成4个点，共100个点，分别构建了25棵块内HST和1棵整体的HST树
+# pre_defined()
+# print(pre_node)
+
+'''二元高斯散点图举例'''
+data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
+for i in data:
+    print(i)
+x, y = data.T
+print(len(data))
+plt.scatter(x, y)
+plt.title('服从均值=100，方差=20的二维正态分布散点图')
+plt.xlabel("x")
+plt.ylabel("y")
+plt.grid(linewidth='1')
+plt.show()

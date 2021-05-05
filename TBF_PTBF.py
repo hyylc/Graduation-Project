@@ -1,14 +1,14 @@
 import random
 import math
 import re
-from HST_construct import HST_C
+# from HST_construct import HST_C
 
 
 # 默认值
 # task数量
-lt = 100
+lt = 300
 # worker数量
-lw = 500
+lw = 300
 # 方差
 m = 100
 # 方差
@@ -26,9 +26,9 @@ max_dis = 0
 HST_beta = 0
 HST_c = 0               # 真实分支数HST_c 
 HST_D = 0
-HST_S = []
+HST_true_S = []
 HST_leaf = 0
-TBF_epsilon = 0.1
+TBF_epsilon = 0.6
 pu = []
 True_S = []
 
@@ -56,17 +56,6 @@ def LCA_lvl(i, j):
 ######准备工作######
 def pre():
     ######数据######
-    fo1 = open('predefined'+str(con_nodes)+'.txt',"r")
-    matrixs = eval(fo1.readlines()[0])
-    # matrixs = [
-    #     {'x': 1,'y': 1},
-    #     {'x': 2,'y': 3},
-    #     {'x': 5,'y': 3},
-    #     {'x': 4,'y': 4}
-    # ]
-    fo1.close()
-    # print(len(matrixs))
-
     fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
     test_data = fo.readlines()
     tasks = eval(test_data[0])
@@ -87,15 +76,12 @@ def pre():
 
     ######建树#######
     # random.shuffle(matrixs)
-    Hst = HST_C(matrixs)
-    HST_tree = Hst.algorithm_1()
-    HST_beta = Hst.beta
-    max_dis = Hst.maxD
-    HST_c = Hst.c-1
-    HST_D = Hst.D
-    HST_S = Hst.S
-    HST_leaf = pow(HST_c, HST_D)
-    return HST_tree,HST_beta,max_dis,HST_c,HST_D,HST_S,HST_leaf,tasks,workers
+    fo = open("HST.txt", "r")
+    HST_info = eval(fo.readlines()[0])
+    # print(HST_info)
+    fo.close()
+    # return HST_tree,HST_beta,max_dis,HST_c,HST_D,HST_S,HST_leaf,tasks,workers
+    return HST_info['HST_D'],HST_info['HST_c'],HST_info['HST_true_S'],tasks,workers
 
 # 随机游走，降低复杂度
 def random_walk(leaf,pu):
@@ -154,7 +140,6 @@ def peturbed(node,pu):
     shortest_dis = 1e5
     # print(node)
     for i in range(len(True_S)):
-        
         tmp_dis = dis(node,True_S[i])
         if tmp_dis < shortest_dis:
             shortest_dis = tmp_dis
@@ -275,23 +260,12 @@ def PTBF():
     return MA
 
 
-HST_tree,HST_beta,max_dis,HST_c,HST_D,HST_S,HST_leaf,tasks,workers = pre()
-for i in range(len(HST_S[0])):
-    if HST_S[0][i] != []:
-        True_S.append({
-            'x' : HST_S[0][i][0]['x'],
-            'y' : HST_S[0][i][0]['y'],
-            'id' : i 
-        })
+HST_D,HST_c,HST_true_S,tasks,workers = pre()
+
 print("##########建树##########")
 print('HST树的最高层：',HST_D)
-print('beta = ',HST_beta)
-print('最远距离：',max_dis)
 print('分支数：',HST_c)
-print('根节点：',HST_S[HST_D])
-print('叶子节点数：',len(HST_S[0]))
-print('叶子节点：',HST_S[0])
-print('叶子节点中的真实节点：',True_S)
+print('真实叶子节点数：',len(HST_true_S))
 
 print("\n##########TBF算法##########")
 TBF_MA = TBF(TBF_epsilon)

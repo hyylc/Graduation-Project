@@ -141,32 +141,59 @@ class HST_C(object):
         return HST_tree
 
 
-# matrixs = [
-#     {'x': 1,'y': 1},
-#     {'x': 2,'y': 3},
-#     {'x': 5,'y': 3},
-#     {'x': 4,'y': 4}
-# ]
-# # V的一个随机序列PI
-# # random.shuffle(matrixs)
-# # 随机序列作为建树的根节点
-# Test = HST_C(matrixs)
-# 构建的树
+# fo1 = open('predefined.txt',"r")
+# matrixs = eval(fo1.readlines()[0])
+# fo1.close()
+# pre = []
+# for i in matrixs:
+#     pre += i
+# print(pre)
+# random.shuffle(pre)
+# Test = HST_C(pre)
+# # 构建的树
 # HST_tree = Test.algorithm_1()
 # Ture_S = []
-# for i in range(len(Test.S[0])):
-#     if Test.S[0][i] != []:
+# for j in range(len(Test.S[0])):
+#     if Test.S[0][j] != []:
 #         Ture_S.append({
-#             'x' : Test.S[0][i][0]['x'],
-#             'y' : Test.S[0][i][0]['y'],
-#             'id' : i 
+#             'x' : Test.S[0][j][0]['x'],
+#             'y' : Test.S[0][j][0]['y'],
+#             'id' : j
 #         })
-# print(Ture_S)
-# print(len(Ture_S))
-# print('beta = ',Test.beta)
-# print('最远距离：',Test.maxD)
-# print('最高层数：',Test.D)
-# print('分支数：',Test.c-1)
-# # print('根节点：',Test.S[Test.D])
-# print('叶子节点：',Test.S[0])
-# print('叶子节点数：',len(Test.S[0]))
+# re = {
+#     'HST_D' : Test.D,
+#     'HST_c' : Test.c-1,
+#     'HST_true_S' : Ture_S,
+# }
+# # 打开一个文件
+# fo = open("HST.txt", "w")
+# fo.write(str(re))
+# # 关闭打开的文件
+# fo.close()
+# 随机序列作为建树的根节点
+# for i in range(25):
+#     pre = matrixs[i]
+#     print(pre)
+#     random.shuffle(pre)
+#     Test = HST_C(pre)
+#     # 构建的树
+#     HST_tree = Test.algorithm_1()
+#     Ture_S = []
+#     for j in range(len(Test.S[0])):
+#         if Test.S[0][j] != []:
+#             Ture_S.append({
+#                 'x' : Test.S[0][j][0]['x'],
+#                 'y' : Test.S[0][j][0]['y'],
+#                 'id' : j
+#             })
+#     re = {
+#         'id' : i,
+#         'HST_D' : Test.D,
+#         'HST_c' : Test.c-1,
+#         'HST_true_S' : Ture_S,
+#     }
+#     # 打开一个文件
+#     fo = open(str(i)+"_HST.txt", "w")
+#     fo.write(str(re))
+#     # 关闭打开的文件
+#     fo.close()
