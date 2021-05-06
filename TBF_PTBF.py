@@ -6,12 +6,12 @@ import re
 
 # 默认值
 # task数量
-lt = 300
+lt = 100
 # worker数量
-lw = 300
-# 方差
+lw = 500
+# 均值
 m = 100
-# 方差
+# 标准差
 sd = 20
 # 预定义点数量
 con_nodes = 4
@@ -262,7 +262,7 @@ def PTBF():
 
 HST_D,HST_c,HST_true_S,tasks,workers = pre()
 
-print("##########建树##########")
+
 print('HST树的最高层：',HST_D)
 print('分支数：',HST_c)
 print('真实叶子节点数：',len(HST_true_S))

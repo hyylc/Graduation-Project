@@ -6,12 +6,12 @@ import re
 
 # 默认值
 # task数量
-lt = 300
+lt = 100
 # worker数量
-lw = 300
-# 方差
+lw = 500
+# 均值
 m = 100
-# 方差
+# 标准差
 sd = 20
 # 预定义点数量
 con_nodes = 4
