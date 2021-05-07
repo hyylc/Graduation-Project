@@ -36,7 +36,7 @@ def Gaussian_Distribution(N=2, M=300, m=100, sigma=20):
 def uniform_Distribution(a=0.6, b=1.2, M=300):
     re = []
     for i in range(M):
-        re.append(round(random.uniform(a, b),3))
+        re.append(random.uniform(a, b))
     return re
 
 
@@ -51,16 +51,16 @@ def data_pre(lt=300, lw=500, m=100, sd=20):
     re_task = []
     for i in range(lw):
         tmp = {
-            'x' : round(w_x[i],3),
-            'y' : round(w_y[i],3),
-            'epsilon' : round(w_e[i],3)
+            'x' : w_x[i],
+            'y' : w_y[i],
+            'epsilon' : w_e[i]
         }
         re_worker.append(tmp)
     for i in range(lt):
         tmp = {
-            'x' : round(t_x[i],3),
-            'y' : round(t_y[i],3),
-            'epsilon' : round(t_e[i],3)
+            'x' : t_x[i],
+            'y' : t_y[i],
+            'epsilon' : t_e[i]
         }
         re_task.append(tmp)
     # 打开一个文件
@@ -84,8 +84,8 @@ def pre_defined(N=4):
                 x.append(item[0])
                 y.append(item[1])
                 tmp.append({
-                    'x' : round(item[0],3),
-                    'y' : round(item[1],3)
+                    'x' : item[0],
+                    'y' : item[1],
                 })
             re.append(tmp)
     plt.scatter(x,y)
@@ -111,16 +111,16 @@ def data_pre1(lt=300, lw=500, m=100, sd=20):
         re_task = []
         for i in range(lw):
             tmp = {
-                'x' : round(w_x[i],3),
-                'y' : round(w_y[i],3),
-                'epsilon' : round(w_e[i],3)
+                'x' : w_x[i],
+                'y' : w_y[i],
+                'epsilon' : w_e[i]
             }
             re_worker.append(tmp)
         for i in range(lt):
             tmp = {
-                'x' : round(t_x[i],3),
-                'y' : round(t_y[i],3),
-                'epsilon' : round(t_e[i],3)
+                'x' : t_x[i],
+                'y' : t_y[i],
+                'epsilon' : t_e[i],
             }
             re_task.append(tmp)
         # 打开一个文件
@@ -154,21 +154,20 @@ for i in range(len(sigma)):
 data_pre1()
 
 
-
 # 生成预定义的点
 # 5.4备注：在25个块中，各自生成4个点，共100个点，分别构建了25棵块内HST和1棵整体的HST树
-# pre_defined()
+pre_defined()
 # print(pre_node)
 
-'''二元高斯散点图举例'''
-data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
-for i in data:
-    print(i)
-x, y = data.T
-print(len(data))
-plt.scatter(x, y)
-plt.title('服从均值=100，方差=20的二维正态分布散点图')
-plt.xlabel("x")
-plt.ylabel("y")
-plt.grid(linewidth='1')
-plt.show()
+# '''二元高斯散点图举例'''
+# data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
+# for i in data:
+#     print(i)
+# x, y = data.T
+# print(len(data))
+# plt.scatter(x, y)
+# plt.title('服从均值=100，方差=20的二维正态分布散点图')
+# plt.xlabel("x")
+# plt.ylabel("y")
+# plt.grid(linewidth='1')
+# plt.show()

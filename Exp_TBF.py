@@ -45,6 +45,7 @@ def node_dis(i,j):
 
 #任务和任务接收方集合
 def pre():
+    # 固定其中三项，TBF的隐私参数默认0.6  PTBF的隐私参数默认0.6-1.2
     fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+".txt", "r")
     test_data = fo.readlines()
     tasks = eval(test_data[0])
@@ -250,5 +251,45 @@ def Exp_TBF():
     print('Exp_TBF算法总距离：',total_distance)
     return MA
 
-tasks,workers = pre()
-Exp_TBF()
+
+T_size = [100,200,300,400,500]
+W_size = [300,400,500,600,700]
+mean = [50,75,100,125,150]
+sigma = [10,15,20,25,30]
+
+
+print('任务数量取100-500')
+for i in range(len(T_size)):
+    lt = T_size[i]
+    lw = 500
+    m = 100
+    sd = 20
+    tasks,workers = pre()
+    Exp_TBF()
+
+print('任务接收方数量取300-700')
+for i in range(len(W_size)):
+    lt = 300
+    lw = W_size[i]
+    m = 100
+    sd = 20
+    tasks,workers = pre()
+    Exp_TBF()
+
+print('均值取50-150')
+for i in range(len(mean)):
+    lt = 300
+    lw = 500
+    m = mean[i]
+    sd = 20
+    tasks,workers = pre()
+    Exp_TBF()
+
+print('标准差取10-30')
+for i in range(len(sigma)):
+    lt = 300
+    lw = 500
+    m = 100
+    sd = sigma[i]
+    tasks,workers = pre()
+    Exp_TBF()
