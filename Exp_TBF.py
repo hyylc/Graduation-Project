@@ -244,12 +244,12 @@ def Exp_TBF():
             'leaf' : re_leaf
         })
     MA = Exp_TBF_assign(W_w)
-    print('分配总数：',len(MA))
+    # print('分配总数：',len(MA))
     total_distance = 0
     for i in MA:
         total_distance += node_dis(tasks[i['t']],workers[i['w']])
-    print('Exp_TBF算法总距离：',total_distance)
-    return MA
+    # print('Exp_TBF算法总距离：',total_distance)
+    return total_distance
 
 
 T_size = [100,200,300,400,500]
@@ -258,6 +258,12 @@ mean = [50,75,100,125,150]
 sigma = [10,15,20,25,30]
 
 
+T_variety = []
+W_variety = []
+m_variety = []
+s_variety = []
+e_variety = []
+
 print('任务数量取100-500')
 for i in range(len(T_size)):
     lt = T_size[i]
@@ -265,7 +271,12 @@ for i in range(len(T_size)):
     m = 100
     sd = 20
     tasks,workers = pre()
-    Exp_TBF()
+    distance = 0
+    for times in range(20):
+        distance += Exp_TBF()
+    distance = distance/20
+    print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
+    T_variety.append(distance)
 
 print('任务接收方数量取300-700')
 for i in range(len(W_size)):
@@ -274,7 +285,12 @@ for i in range(len(W_size)):
     m = 100
     sd = 20
     tasks,workers = pre()
-    Exp_TBF()
+    distance = 0
+    for times in range(20):
+        distance += Exp_TBF()
+    distance = distance/20
+    print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
+    W_variety.append(distance)
 
 print('均值取50-150')
 for i in range(len(mean)):
@@ -283,7 +299,12 @@ for i in range(len(mean)):
     m = mean[i]
     sd = 20
     tasks,workers = pre()
-    Exp_TBF()
+    distance = 0
+    for times in range(20):
+        distance += Exp_TBF()
+    distance = distance/20
+    print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
+    m_variety.append(distance)
 
 print('标准差取10-30')
 for i in range(len(sigma)):
@@ -292,4 +313,28 @@ for i in range(len(sigma)):
     m = 100
     sd = sigma[i]
     tasks,workers = pre()
-    Exp_TBF()
+    distance = 0
+    for times in range(20):
+        distance += Exp_TBF()
+    distance = distance/20
+    print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
+    s_variety.append(distance)
+
+
+# # 写文件
+# fo = open("T_vary.txt", "a+")
+# fo.write(str(T_variety))
+# fo.write('\n')
+# fo.close()
+# fo = open("W_vary.txt", "a+")
+# fo.write(str(W_variety))
+# fo.write('\n')
+# fo.close()
+# fo = open("m_vary.txt", "a+")
+# fo.write(str(m_variety))
+# fo.write('\n')
+# fo.close()
+# fo = open("s_vary.txt", "a+")
+# fo.write(str(s_variety))
+# fo.write('\n')
+# fo.close()

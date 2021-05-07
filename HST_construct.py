@@ -141,66 +141,66 @@ class HST_C(object):
         return HST_tree
 
 
-#使用所有预定义点构建HST树
-fo1 = open('predefined.txt',"r")
-matrixs = eval(fo1.readlines()[0])
-fo1.close()
-pre = []
-for i in matrixs:
-    pre += i
-print(pre)
-random.shuffle(pre)
-Test = HST_C(pre)
-# 构建的树
-HST_tree = Test.algorithm_1()
-Ture_S = []
-for j in range(len(Test.S[0])):
-    if Test.S[0][j] != []:
-        Ture_S.append({
-            'x' : Test.S[0][j][0]['x'],
-            'y' : Test.S[0][j][0]['y'],
-            'id' : j
-        })
-re = {
-    'HST_D' : Test.D,
-    'HST_c' : Test.c-1,
-    'HST_true_S' : Ture_S,
-}
-# 打开一个文件
-fo = open("HST.txt", "w")
-fo.write(str(re))
-# 关闭打开的文件
-fo.close()
+# #使用所有预定义点构建HST树
+# fo1 = open('predefined.txt',"r")
+# matrixs = eval(fo1.readlines()[0])
+# fo1.close()
+# pre = []
+# for i in matrixs:
+#     pre += i
+# print(pre)
+# random.shuffle(pre)
+# Test = HST_C(pre)
+# # 构建的树
+# HST_tree = Test.algorithm_1()
+# Ture_S = []
+# for j in range(len(Test.S[0])):
+#     if Test.S[0][j] != []:
+#         Ture_S.append({
+#             'x' : Test.S[0][j][0]['x'],
+#             'y' : Test.S[0][j][0]['y'],
+#             'id' : j
+#         })
+# re = {
+#     'HST_D' : Test.D,
+#     'HST_c' : Test.c-1,
+#     'HST_true_S' : Ture_S,
+# }
+# # 打开一个文件
+# fo = open("HST.txt", "w")
+# fo.write(str(re))
+# # 关闭打开的文件
+# fo.close()
 
 
-#分别构建25棵HST树
-fo1 = open('predefined.txt',"r")
-matrixs = eval(fo1.readlines()[0])
-fo1.close()
-# 随机序列作为建树的根节点
-for i in range(25):
-    pre = matrixs[i]
-    print(pre)
-    random.shuffle(pre)
-    Test = HST_C(pre)
-    # 构建的树
-    HST_tree = Test.algorithm_1()
-    Ture_S = []
-    for j in range(len(Test.S[0])):
-        if Test.S[0][j] != []:
-            Ture_S.append({
-                'x' : Test.S[0][j][0]['x'],
-                'y' : Test.S[0][j][0]['y'],
-                'id' : j
-            })
-    re = {
-        'id' : i,
-        'HST_D' : Test.D,
-        'HST_c' : Test.c-1,
-        'HST_true_S' : Ture_S,
-    }
-    # 打开一个文件
-    fo = open(str(i)+"_HST.txt", "w")
-    fo.write(str(re))
-    # 关闭打开的文件
-    fo.close()
+# #分别构建25棵HST树
+# fo1 = open('predefined.txt',"r")
+# matrixs = eval(fo1.readlines()[0])
+# fo1.close()
+# # 随机序列作为建树的根节点
+# for i in range(25):
+#     pre = matrixs[i]
+#     print(pre)
+#     random.shuffle(pre)
+#     Test = HST_C(pre)
+#     # 构建的树
+#     HST_tree = Test.algorithm_1()
+#     Ture_S = []
+#     for j in range(len(Test.S[0])):
+#         if Test.S[0][j] != []:
+#             Ture_S.append({
+#                 'x' : Test.S[0][j][0]['x'],
+#                 'y' : Test.S[0][j][0]['y'],
+#                 'id' : j
+#             })
+#     re = {
+#         'id' : i,
+#         'HST_D' : Test.D,
+#         'HST_c' : Test.c-1,
+#         'HST_true_S' : Ture_S,
+#     }
+#     # 打开一个文件
+#     fo = open(str(i)+"_HST.txt", "w")
+#     fo.write(str(re))
+#     # 关闭打开的文件
+#     fo.close()
