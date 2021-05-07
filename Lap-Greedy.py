@@ -93,61 +93,86 @@ m_variety = []
 s_variety = []
 e_variety = []
 
-print('任务数量取100-500')
-for i in range(len(T_size)):
-    lt = T_size[i]
-    lw = 500
-    m = 100
-    sd = 20
-    tasks,workers = pre()
-    distance = 0
-    for times in range(20):
-        distance += Lap_Greedy(workers,tasks,epsilon)
-    distance = distance/20
-    print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
-    T_variety.append(distance)
 
-print('任务接收方数量取300-700')
-for i in range(len(T_size)):
-    lt = 300
-    lw = W_size[i]
-    m = 100
-    sd = 20
-    tasks,workers = pre()
-    distance = 0
-    for times in range(20):
-        distance += Lap_Greedy(workers,tasks,epsilon)
-    distance = distance/20
-    print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
-    W_variety.append(distance)
 
-print('均值取50-150')
-for i in range(len(T_size)):
-    lt = 300
-    lw = 500
-    m = mean[i]
-    sd = 20
-    tasks,workers = pre()
-    distance = 0
-    for times in range(20):
-        distance += Lap_Greedy(workers,tasks,epsilon)
-    distance = distance/20
-    print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
-    m_variety.append(distance)
 
-print('标准差取10-30')
-for i in range(len(T_size)):
-    lt = 300
-    lw = 500
-    m = 100
-    sd = sigma[i]
-    tasks,workers = pre()
-    distance = 0
-    for times in range(20):
-        distance += Lap_Greedy(workers,tasks,epsilon)
-    distance = distance/20
-    print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
-    s_variety.append(distance)
+# print('任务数量取100-500')
+# for i in range(len(T_size)):
+#     lt = T_size[i]
+#     lw = 500
+#     m = 100
+#     sd = 20
+#     tasks,workers = pre()
+#     distance = 0
+#     for times in range(20):
+#         distance += Lap_Greedy(workers,tasks,epsilon)
+#     distance = distance/20
+#     print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
+#     T_variety.append(distance)
+
+# print('任务接收方数量取300-700')
+# for i in range(len(T_size)):
+#     lt = 300
+#     lw = W_size[i]
+#     m = 100
+#     sd = 20
+#     tasks,workers = pre()
+#     distance = 0
+#     for times in range(20):
+#         distance += Lap_Greedy(workers,tasks,epsilon)
+#     distance = distance/20
+#     print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
+#     W_variety.append(distance)
+
+# print('均值取50-150')
+# for i in range(len(T_size)):
+#     lt = 300
+#     lw = 500
+#     m = mean[i]
+#     sd = 20
+#     tasks,workers = pre()
+#     distance = 0
+#     for times in range(20):
+#         distance += Lap_Greedy(workers,tasks,epsilon)
+#     distance = distance/20
+#     print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
+#     m_variety.append(distance)
+
+# print('标准差取10-30')
+# for i in range(len(T_size)):
+#     lt = 300
+#     lw = 500
+#     m = 100
+#     sd = sigma[i]
+#     tasks,workers = pre()
+#     distance = 0
+#     for times in range(20):
+#         distance += Lap_Greedy(workers,tasks,epsilon)
+#     distance = distance/20
+#     print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
+#     s_variety.append(distance)
+
+# print('隐私预算取五个值')
+# for i in range(5):
+#     lt = 300
+#     lw = 500
+#     m = 100
+#     sd = 20
+#     a = round(0.2+0.2*i,1)
+#     b = 1.2
+#     fo = open(str(lt)+"_"+str(lw)+"_"+str(m)+"_"+str(sd)+"_"+str(a)+"_"+str(b)+".txt", "r")
+#     test_data = fo.readlines()
+#     tasks = eval(test_data[0])
+#     workers = eval(test_data[1])
+#     fo.close()
+#     distance = 0
+#     epsilon = a
+#     for times in range(20):
+#         distance += Lap_Greedy(workers,tasks,epsilon)
+#     distance = distance/20
+#     print('20次运行结果的均值：Lap_Greedy算法总距离：',distance)
+#     e_variety.append(distance)
+
 
 # # 写文件
 # fo = open("T_vary.txt", "a+")
@@ -164,5 +189,9 @@ for i in range(len(T_size)):
 # fo.close()
 # fo = open("s_vary.txt", "a+")
 # fo.write(str(s_variety))
+# fo.write('\n')
+# fo.close()
+# fo = open("e_vary.txt", "a+")
+# fo.write(str(e_variety))
 # fo.write('\n')
 # fo.close()

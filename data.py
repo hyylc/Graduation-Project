@@ -139,25 +139,21 @@ mean = [50,75,100,125,150]
 sigma = [10,15,20,25,30]
 
 
-# 生成测试的点
-for i in range(len(T_size)):
-    data_pre(lt=T_size[i])
-for i in range(len(W_size)):
-    data_pre(lw=W_size[i])
-for i in range(len(mean)):
-    data_pre(m=mean[i])
-for i in range(len(sigma)):
-    data_pre(sd=sigma[i])
+# # 生成测试的点
+# for i in range(len(T_size)):
+#     data_pre(lt=T_size[i])
+# for i in range(len(W_size)):
+#     data_pre(lw=W_size[i])
+# for i in range(len(mean)):
+#     data_pre(m=mean[i])
+# for i in range(len(sigma)):
+#     data_pre(sd=sigma[i])
+# # 生成5个个性隐私参数的文件
+# data_pre1()
+# # 生成预定义的点
+# # 5.4备注：在25个块中，各自生成4个点，共100个点，分别构建了25棵块内HST和1棵整体的HST树
+# pre_defined()
 
-
-# 生成5个个性隐私参数的文件
-data_pre1()
-
-
-# 生成预定义的点
-# 5.4备注：在25个块中，各自生成4个点，共100个点，分别构建了25棵块内HST和1棵整体的HST树
-pre_defined()
-# print(pre_node)
 
 # '''二元高斯散点图举例'''
 # data, _ = Gaussian_Distribution(N=2, M=3000, m=150, sigma=30)
