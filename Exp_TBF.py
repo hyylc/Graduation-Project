@@ -280,19 +280,19 @@ e_variety = []
 #     print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
 #     T_variety.append(distance)
 
-# print('任务接收方数量取300-700')
-# for i in range(len(W_size)):
-#     lt = 300
-#     lw = W_size[i]
-#     m = 100
-#     sd = 20
-#     tasks,workers = pre()
-#     distance = 0
-#     for times in range(20):
-#         distance += Exp_TBF()
-#     distance = distance/20
-#     print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
-#     W_variety.append(distance)
+print('任务接收方数量取300-700')
+for i in range(len(W_size)):
+    lt = 300
+    lw = W_size[i]
+    m = 100
+    sd = 20
+    tasks,workers = pre()
+    distance = 0
+    for times in range(20):
+        distance += Exp_TBF()
+    distance = distance/20
+    print('20次运行结果的均值：Exp_TBF算法总距离：',distance)
+    W_variety.append(distance)
 
 # print('均值取50-150')
 # for i in range(len(mean)):
